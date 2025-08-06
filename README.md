@@ -7,3 +7,6 @@ pip install -r requirements.txt
 #Run to activate virtual environment
 .venv\Scripts\Activate.bat
 
+#To run app
+streamlit run app.py
+
