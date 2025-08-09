@@ -1,0 +1,30 @@
+from langchain import LLMChain, PromptTemplate
+from langchain.chat_models import ChatOpenAI
+
+parse_system = """
+You are a JSON extractor. Given a user request, output a JSON object with these fields:
+- BRS: "Y" or "N"
+- FRS: "Y" or "N"
+- post_PEA: "Y" or "N"
+- PBA: one of ["ibg","paynow","NIL"]
+- citizenship: one of ["SG","PR","Foreigner"]
+- num_results: integer (default 1 if not specified)
+
+If the user omits a field, set its value to null (except num_results defaults to 1).
+Respond with only valid JSON.
+"""
+
+parse_user = """
+User request:
+\"{free_text}\"
+"""
+
+parse_prompt = PromptTemplate(
+    input_variables=["free_text"],
+    template=parse_system + "\n\n" + parse_user
+)
+
+parser_chain = LLMChain(
+    llm=ChatOpenAI(temperature=0),
+    prompt=parse_prompt
+)

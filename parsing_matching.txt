@@ -1,0 +1,22 @@
+# 1. Get free text from Streamlit
+free_text = st.text_area("Describe your test-account requirements:")
+
+if st.button("Find Accounts"):
+    # 2. Parse into structured criteria
+    parsed = parser_chain.run(free_text=free_text)
+    criteria = json.loads(parsed)
+    
+    # 3. Use your DataFrame logic to find matches
+    exact_matches, closest_match, diff_fields = find_matches(df, criteria)
+    
+    # 4. Bundle for final response
+    summary = {
+        "exact_matches": exact_matches,
+        "closest_match": closest_match,
+        "diff_fields": diff_fields
+    }
+    response = renderer_chain.run(
+        scenario=free_text,
+        **summary
+    )
+    st.markdown(response)
