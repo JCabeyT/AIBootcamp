@@ -83,7 +83,7 @@ else:
     else:
         api_key = st.session_state['openai_api_key']
 
-    tab1, tab2 = st.tabs(["Standard Chat", "RAG Chat (LangChain + Chroma)"])
+    tab1, tab2, tab3 = st.tabs(["Standard Chat", "RAG Chat (LangChain + Chroma)", "Test Account Matcher"])
 
     with tab1:
         st.header("Chat with GenAI (OpenAI)")
@@ -309,3 +309,78 @@ else:
                 st.markdown(f"<span style='font-size:0.8em;color:#888;'>{chat['timestamp']}</span>", unsafe_allow_html=True)
                 st.markdown(f"**GenAI:** {chat['ai']}  ", unsafe_allow_html=False)
                 st.markdown(f"<span style='font-size:0.8em;color:#888;'>{chat['timestamp']}</span>", unsafe_allow_html=True)
+
+# --- Test Account Matcher Tab ---
+with tab3:
+    st.header("Test Account Matcher")
+
+    # Sidebar CSV uploader
+    st.sidebar.subheader("Upload Test Accounts CSV")
+    accounts_file = st.sidebar.file_uploader("Upload CSV", type=["csv"], key="accounts_uploader")
+
+    if accounts_file:
+        try:
+            accounts_df = pd.read_csv(accounts_file)
+            required_cols = {'mbr_num', 'BRS', 'FRS', 'post_PEA', 'PBA', 'citizenship'}
+            if not required_cols.issubset(set(accounts_df.columns)):
+                st.sidebar.error("Uploaded CSV is missing required columns.")
+            else:
+                st.session_state['accounts_df'] = accounts_df
+                st.sidebar.success("Test accounts loaded!")
+        except Exception as e:
+            st.sidebar.error(f"Error reading file: {e}")
+
+    if 'accounts_df' in st.session_state:
+        st.expander("Preview Uploaded Test Accounts").dataframe(st.session_state['accounts_df'])
+
+        # Input form
+        with st.form("account_requirements_form"):
+            brs = st.selectbox("BRS", ["Y", "N"])
+            frs = st.selectbox("FRS", ["Y", "N"])
+            post_pea = st.selectbox("post_PEA", ["Y", "N"])
+            pba = st.selectbox("PBA", ["paynow", "other"])
+            citizenship = st.selectbox("Citizenship", ["SG", "non-SG"])
+            submitted = st.form_submit_button("Find Matching Accounts")
+
+        if submitted:
+            df = st.session_state['accounts_df']
+
+            # Exact match
+            exact_matches = df[
+                (df['BRS'] == brs) &
+                (df['FRS'] == frs) &
+                (df['post_PEA'] == post_pea) &
+                (df['PBA'] == pba) &
+                (df['citizenship'] == citizenship)
+            ]
+
+            if not exact_matches.empty:
+                st.success("✅ Exact match found. No patching required.")
+                st.write("Matching test accounts:")
+                st.dataframe(exact_matches[['mbr_num']])
+            else:
+                # Closest match logic
+                def score_row(row):
+                    score = 0
+                    diffs = []
+                    if row['BRS'] != brs: diffs.append('BRS')
+                    if row['FRS'] != frs: diffs.append('FRS')
+                    if row['post_PEA'] != post_pea: diffs.append('post_PEA')
+                    if row['PBA'] != pba: diffs.append('PBA')
+                    if row['citizenship'] != citizenship: diffs.append('citizenship')
+                    score = len(diffs)
+                    return pd.Series({'score': score, 'diffs': diffs})
+
+                scored_df = df.copy()
+                scored_df[['score', 'diffs']] = df.apply(score_row, axis=1)
+                closest_matches = scored_df.sort_values('score').head(3)
+
+                st.warning("⚠️ No exact match found.")
+                st.write("Closest test accounts:")
+                st.dataframe(closest_matches[['mbr_num', 'diffs']])
+
+                all_diffs = set(field for diff_list in closest_matches['diffs'] for field in diff_list)
+                st.info(f"Please approach ITPM to patch the field(s): {', '.join(all_diffs)}")
+    else:
+        st.info("Please upload a test accounts CSV to begin.")
+    
