@@ -170,4 +170,20 @@ with tab3:
                 st.info(f"Please approach ITPM to patch the field(s): {', '.join(all_diffs)}")
     else:
         st.info("Please upload a test accounts CSV to begin.")
+
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+user_input = st.text_input("You:", key="user_input")
+
+if user_input:
+    bot_response = f"Echo: {user_input}"  # Replace with actual GenAI response
+
+    st.session_state.chat_history.append({
+        "user": user_input,
+        "bot": bot_response,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
+
+    st.session_state.user_input = ""
     
