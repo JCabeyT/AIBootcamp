@@ -1,22 +1,10 @@
-import streamlit as st
+selected_account = st.selectbox("Choose a test account:", options)
 
-st.set_page_config(
-    page_title="Chat History",
-    page_icon="💬",
-)
+if selected_account and selected_account != "Select an account":
+    st.session_state.chat_history.append({
+        "selection": selected_account,
+        "source": "Test Account Matcher",
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
 
-st.title("Chat History")
-
-if "chat_history" not in st.session_state or not st.session_state.chat_history:
-    st.info("No chat history yet.")
-else:
-    for chat in st.session_state.chat_history:
-        st.markdown(f"**You:** {chat['user']}")
-        st.markdown(f"<span style='font-size:0.8em;color:#888;'>{chat['timestamp']}</span>", unsafe_allow_html=True)
-        st.markdown(f"**GenAI:** {chat['bot']}")
-        st.markdown(f"<span style='font-size:0.8em;color:#888;'>{chat['timestamp']}</span>", unsafe_allow_html=True)
-        st.markdown("---")
-
-    if st.button("Clear Chat History"):
-        st.session_state.chat_history = []
-        st.success("Chat history cleared.")
+    st.experimental_rerun()
