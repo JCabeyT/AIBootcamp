@@ -175,21 +175,5 @@ with tab3:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# Dropdown options
-options = ["Select an option", "View matching logic", "Show duplicate handling", "Explain role-based access"]
-selected_option = st.selectbox("Choose a query:", options, index=0)
-
-# Log selection if it's valid
-if selected_option != "Select an option":
-    st.session_state.chat_history.append({
-        "selection": selected_option,
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
-
-# Display last 5 selections
-st.markdown("### 🗂️ Chat History (Last 5 Selections)")
-for entry in st.session_state.chat_history[-5:][::-1]:  # Show newest first
-    st.markdown(f"- **{entry['selection']}**  \n*{entry['timestamp']}*")
-
 
 
