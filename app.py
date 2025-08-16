@@ -49,18 +49,19 @@ else:
         logout()
 
     st.title('AI Bootcamp')
-    st.write("Welcome to the **Test Account Matcher** tool.
-
-To get started, please describe the profile of the member you need — including attributes like role, region, permissions, or any other relevant criteria.
-
-🔍 If a matching test account exists in the uploaded CSV, the assistant will return the exact match.
-
-🤔 If no exact match is found, the assistant will suggest the closest available test accounts based on similarity.
-
-📩 If none of the suggestions are suitable, follow the provided instructions to notify the ITPM team so they can patch or provision a new test account.
-
-This tool helps streamline GenAI assistant testing by ensuring you always have the right test data at your fingertips.
-")
+    st.write("""
+    Welcome to the **Test Account Matcher** tool.
+    
+    To get started, please describe the profile of the member you need — including attributes like role, region, permissions, or any other relevant criteria.
+    
+    🔍 If a matching test account exists in the uploaded CSV, the assistant will return the exact match.
+    
+    🤔 If no exact match is found, the assistant will suggest the closest available test accounts based on similarity.
+    
+    📩 If none of the suggestions are suitable, follow the provided instructions to notify the ITPM team so they can patch or provision a new test account.
+    
+    This tool helps streamline GenAI assistant testing by ensuring you always have the right test data at your fingertips.
+    """)
 
     # --- GenAI Chat Interface ---
     # Session state for chat and settings
