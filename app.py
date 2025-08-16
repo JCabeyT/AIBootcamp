@@ -96,11 +96,6 @@ else:
         api_key = st.session_state['openai_api_key']
 
 tab3 = st.container()
-
-    # --- Test Account Matcher Tab ---
-with tab3:
-    st.header("Test Account Matcher")
-
     
 # --- Test Account Matcher Tab ---
 with tab3:
