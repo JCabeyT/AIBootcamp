@@ -48,7 +48,7 @@ else:
     if st.sidebar.button('Logout'):
         logout()
 
-    st.title('AI Bootcamp')
+    st.title('Test Account Matcher')
     st.write("""
     Welcome to the **Test Account Matcher** tool.
     

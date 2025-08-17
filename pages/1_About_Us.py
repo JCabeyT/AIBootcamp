@@ -8,7 +8,7 @@ st.set_page_config(
 st.title("About Us")
 
 st.markdown("""
-Welcome to the **AI Bootcamp Assistant** — a smart tool designed to support GenAI testing workflows.
+Welcome to the **Test Account Matcher** — a smart tool designed to support GenAI testing workflows.
 
 This app helps teams efficiently match test accounts to user-defined profiles, ensuring smoother testing and faster iteration.
 
